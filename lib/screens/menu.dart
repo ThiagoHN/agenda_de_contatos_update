@@ -1,4 +1,5 @@
 import 'package:agenda_de_contatos/provider/contatos_provider.dart';
+import 'package:agenda_de_contatos/screens/aniversariantes.dart';
 import 'package:agenda_de_contatos/screens/contato_info.dart';
 import 'package:agenda_de_contatos/screens/criadorcontato.dart';
 import 'package:agenda_de_contatos/provider/usuarios_provider.dart';
@@ -39,6 +40,13 @@ class Menu extends StatelessWidget {
                 onTap: () async {
                   Provider.of<UsuarioProvider>(context, listen: false).logout();
                 },
+              ), 
+              ListTile(
+                leading: Text('Aniversariantes'),
+                trailing: Icon(Icons.cake),
+                onTap: () async {
+                    Navigator.of(context).pushNamed(Aniversariantes.routeName);
+                  },
               )
             ],
           ),

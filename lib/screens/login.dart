@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
-  static const routeName = 'Tela_principal';
+  static const routeName = 'Login';
 
   @override
   _LoginState createState() => _LoginState();

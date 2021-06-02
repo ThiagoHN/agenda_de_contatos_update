@@ -1,6 +1,7 @@
 import 'package:agenda_de_contatos/models/contato.dart';
 import 'package:agenda_de_contatos/provider/contatos_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:via_cep_flutter/via_cep_flutter.dart';
 
@@ -22,6 +23,7 @@ class _CriadorContato extends State<CriadorContato> {
   String endereco = '';
   String cep = '';
   String telefone = '';
+  DateTime aniversario;
   bool atualizar = false;
 
   void initState() {
@@ -32,23 +34,39 @@ class _CriadorContato extends State<CriadorContato> {
       endereco = widget.c.endereco;
       cep = widget.c.cep;
       telefone = widget.c.telefone;
+      cepIdentifier.text = endereco;
+      if (DateTime.tryParse(widget.c.aniversario) != null) {aniversario = DateTime.parse(widget.c.aniversario);}
+      else {aniversario = DateTime.now();}
       atualizar = true;
     }
   }
 
+  selecionaData() {
+  DateTime hoje = DateTime.now().add(Duration(days: 1));
+  showDatePicker(
+          context: context,
+          initialDate: hoje,
+          firstDate: hoje,
+          lastDate: DateTime(hoje.year + 1))
+      .then((value) => setState(() {
+          aniversario = value;
+      }));
+  }
+
   criarContato() async {
-    if (!globalKey.currentState.validate()) return false;
+    if (!globalKey.currentState.validate() && aniversario != null) return false;
     globalKey.currentState.save();
 
     if (!atualizar)
       await Provider.of<ContatosProvider>(context, listen: false)
-          .add(nome, email, endereco, cep, telefone);
+          .add(nome, email, endereco, cep, telefone,aniversario.toIso8601String());
     else {
       widget.c.nome = nome;
       widget.c.email = email;
       widget.c.endereco = endereco;
       widget.c.cep = cep;
       widget.c.telefone = telefone;
+      widget.c.aniversario = aniversario.toIso8601String();
 
       await Provider.of<ContatosProvider>(context, listen: false)
           .update(widget.c);
@@ -167,6 +185,18 @@ class _CriadorContato extends State<CriadorContato> {
                       return null;
                     },
                   ),
+
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        aniversario == null
+                            ? Text('Nenhuma data \n foi selecionada')
+                            : Text(DateFormat('dd/MM/yyyy').format(aniversario)),
+                        ElevatedButton(
+                            onPressed: selecionaData,
+                            child: Text('Escolha uma data')),
+                      ]),
+
                   const SizedBox(height: 30),
                   ElevatedButton(
                       onPressed: criarContato, child: Text('Confirmar'))

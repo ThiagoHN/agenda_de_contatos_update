@@ -31,13 +31,13 @@ class ContatosProvider with ChangeNotifier {
     _items = userContacts.map((e) {
       final contactData = e.data();
       return Contato(e.id, contactData['nome'], contactData['email'],
-          contactData['endereco'], contactData['cep'], contactData['telefone']);
+          contactData['endereco'], contactData['cep'], contactData['telefone'], contactData['aniversario']);
     }).toList();
     notifyListeners();
   }
 
   Future<void> add(String nome, String email, String endereco, String cep,
-      String telefone) async {
+      String telefone, String aniversario) async {
     final contatoID = DateTime.now().toIso8601String();
     await storage
         .collection(mainCollection)
@@ -53,7 +53,7 @@ class ContatosProvider with ChangeNotifier {
     });
 
     Contato novaConta =
-        Contato(contatoID, nome, email, endereco, cep, telefone);
+        Contato(contatoID, nome, email, endereco, cep, telefone, aniversario);
     _items.add(novaConta);
     notifyListeners();
   }
@@ -84,8 +84,12 @@ class ContatosProvider with ChangeNotifier {
       'email': contatoSelecionado.email,
       'endereco': contatoSelecionado.endereco,
       'cep': contatoSelecionado.cep,
-      'telefone': contatoSelecionado.telefone
+      'telefone': contatoSelecionado.telefone,
+      'aniversario': contatoSelecionado.aniversario
     });
     notifyListeners();
   }
+
+  List<Contato> get aniversariantes => _items.where((element) => DateTime.tryParse(element.aniversario) != null).toList();
+
 }

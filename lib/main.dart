@@ -1,5 +1,6 @@
 import 'package:agenda_de_contatos/provider/contatos_provider.dart';
 import 'package:agenda_de_contatos/provider/usuarios_provider.dart';
+import 'package:agenda_de_contatos/screens/aniversariantes.dart';
 import 'package:agenda_de_contatos/screens/contato_info.dart';
 import 'package:agenda_de_contatos/screens/login.dart';
 import 'package:agenda_de_contatos/screens/menu.dart';
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
           Login.routeName: (ctx) => Login(),
           Menu.routeName: (ctx) => Menu(),
           ContatoInfo.routeName: (ctx) => ContatoInfo(),
+          Aniversariantes.routeName: (ctx) => Aniversariantes(),
         },
       ),
     );

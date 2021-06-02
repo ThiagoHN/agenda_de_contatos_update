@@ -7,9 +7,10 @@ class Contato with ChangeNotifier {
   String _endereco;
   String _cep;
   String _telefone;
+  String _aniversario;
 
   Contato(this._id, this._nome, this._email, this._endereco, this._cep,
-      this._telefone);
+      this._telefone, this._aniversario);
 
   String get idContact {
     return this._id;
@@ -35,6 +36,10 @@ class Contato with ChangeNotifier {
     return this._telefone;
   }
 
+  String get aniversario {
+    return this._aniversario;
+  }
+
   set id(String id) {
     this._id = id;
   }
@@ -57,5 +62,9 @@ class Contato with ChangeNotifier {
 
   set telefone(String telefone) {
     this._telefone = telefone;
+  }
+
+  set aniversario(String aniversario) {
+    this._aniversario = aniversario;
   }
 }
