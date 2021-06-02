@@ -2,6 +2,7 @@ import 'package:agenda_de_contatos/models/contato.dart';
 import 'package:agenda_de_contatos/provider/contatos_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:via_cep_flutter/via_cep_flutter.dart';
 
 class CriadorContato extends StatefulWidget {
   final Contato c;
@@ -15,6 +16,7 @@ class CriadorContato extends StatefulWidget {
 class _CriadorContato extends State<CriadorContato> {
   final GlobalKey<FormState> globalKey = GlobalKey();
 
+  TextEditingController cepIdentifier = TextEditingController();
   String nome = '';
   String email = '';
   String endereco = '';
@@ -102,7 +104,7 @@ class _CriadorContato extends State<CriadorContato> {
                   ),
                   const SizedBox(height: 25),
                   TextFormField(
-                    initialValue: endereco,
+                    controller: cepIdentifier,
                     decoration: InputDecoration(
                         labelText: 'Endereço',
                         icon: Icon(Icons.location_city),
@@ -128,6 +130,19 @@ class _CriadorContato extends State<CriadorContato> {
                     maxLength: 8,
                     onSaved: (value) {
                       cep = value;
+                    },
+                    onChanged: (value) async {
+                      if (value.length < 8)
+                        return;
+                      final adressData = await readAddressByCep(value);
+                      if (adressData.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('CEP inválido')));
+                        return;
+                      }
+                      setState(() {
+                        cepIdentifier.text = adressData['street'] + ',' + adressData['neighborhood'] + ',' + adressData['state'];
+                        endereco = cepIdentifier.text; 
+                      });
                     },
                     validator: (value) {
                       if (value.isEmpty)
