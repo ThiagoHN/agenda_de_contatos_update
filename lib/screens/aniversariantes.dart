@@ -22,6 +22,15 @@ import '../provider/contatos_provider.dart';
 class Aniversariantes extends StatelessWidget {
   static const routeName = 'Aniversariantes';
 
+    CircleAvatar _buildUserPhoto(Contato contato) {
+    if (contato.url != '')
+      return CircleAvatar(
+        backgroundImage: NetworkImage(contato.url),
+      );
+    else
+      return CircleAvatar();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(appBar: AppBar(title: Text('Lista de Aniversariantes')),body: SingleChildScrollView(child: 
@@ -45,7 +54,7 @@ class Aniversariantes extends StatelessWidget {
 
   ListTile buildListTile(Contato contato) {
     return ListTile(
-        leading: CircleAvatar(),
+        leading: _buildUserPhoto(contato),
         title: Text(contato.nome),
         subtitle: Text(contato.telefone),
     );

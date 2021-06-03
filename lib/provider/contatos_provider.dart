@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:agenda_de_contatos/models/contato.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/widgets.dart';
 
 class ContatosProvider with ChangeNotifier {
@@ -7,6 +10,7 @@ class ContatosProvider with ChangeNotifier {
   List<Contato> _items = [];
   final mainCollection = 'usuarios';
   final subCollection = 'contatos';
+  final imageStorage = FirebaseStorage.instance;
 
   String idUsuario;
 
@@ -31,14 +35,25 @@ class ContatosProvider with ChangeNotifier {
     _items = userContacts.map((e) {
       final contactData = e.data();
       return Contato(e.id, contactData['nome'], contactData['email'],
-          contactData['endereco'], contactData['cep'], contactData['telefone'], contactData['aniversario']);
+          contactData['endereco'], contactData['cep'], contactData['telefone'], contactData['aniversario'], contactData['url'], );
     }).toList();
     notifyListeners();
   }
 
   Future<void> add(String nome, String email, String endereco, String cep,
-      String telefone, String aniversario) async {
+      String telefone, String aniversario, File imagem) async {
     final contatoID = DateTime.now().toIso8601String();
+    String url = '';
+    if (imagem.existsSync()) {
+      final ref = imageStorage
+          .ref()
+          .child('contact_image')
+          .child(idUsuario + contatoID + '.jpg');
+
+      await ref.putFile(imagem);
+
+      url = await ref.getDownloadURL();
+    }
     await storage
         .collection(mainCollection)
         .doc(idUsuario)
@@ -49,11 +64,12 @@ class ContatosProvider with ChangeNotifier {
       'email': email,
       'endereco': endereco,
       'cep': cep,
-      'telefone': telefone
+      'telefone': telefone,
+      'url': url
     });
 
     Contato novaConta =
-        Contato(contatoID, nome, email, endereco, cep, telefone, aniversario);
+        Contato(contatoID, nome, email, endereco, cep, telefone, aniversario, url);
     _items.add(novaConta);
     notifyListeners();
   }
@@ -66,14 +82,41 @@ class ContatosProvider with ChangeNotifier {
         .collection(subCollection)
         .doc(contatoSelecionado.idContact)
         .delete();
+
+    if (contatoSelecionado.url != '') {
+      final ref = imageStorage
+          .ref()
+          .child('contact_image')
+          .child(idUsuario + contatoSelecionado.idContact + '.jpg');
+
+      ref.delete();
+    }
+
     notifyListeners();
   }
 
-  Future<void> update(Contato contatoSelecionado) async {
+  Future<void> update(Contato contatoSelecionado, File imagem) async {
     final contaIndex = _items.indexWhere(
         (element) => element.idContact == contatoSelecionado.idContact);
     if (contaIndex == -1) return false;
+    String url = '';
+    if (imagem.existsSync()) {
+      final ref = imageStorage
+          .ref()
+          .child('contact_image')
+          .child(idUsuario + contatoSelecionado.idContact + '.jpg');
+
+      await ref.putFile(imagem);
+
+      url = await ref.getDownloadURL();
+    }
+    else {
+      url = contatoSelecionado.url;
+    }
+    
     _items[contaIndex] = contatoSelecionado;
+    _items[contaIndex].url = url;
+
     await storage
         .collection(mainCollection)
         .doc(idUsuario)
@@ -85,7 +128,8 @@ class ContatosProvider with ChangeNotifier {
       'endereco': contatoSelecionado.endereco,
       'cep': contatoSelecionado.cep,
       'telefone': contatoSelecionado.telefone,
-      'aniversario': contatoSelecionado.aniversario
+      'aniversario': contatoSelecionado.aniversario,
+      'url': url
     });
     notifyListeners();
   }

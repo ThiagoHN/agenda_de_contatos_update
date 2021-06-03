@@ -35,6 +35,8 @@ dependencies:
   via_cep_flutter: ^0.2.2
   intl: ^0.17.0
   grouped_list: ^4.0.0
+  image_picker: ^0.8.0
+  image_cropper: ^1.4.0
 
 dev_dependencies:
   flutter_test:

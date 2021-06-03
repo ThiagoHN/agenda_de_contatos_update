@@ -8,9 +8,10 @@ class Contato with ChangeNotifier {
   String _cep;
   String _telefone;
   String _aniversario;
+  String _url;
 
   Contato(this._id, this._nome, this._email, this._endereco, this._cep,
-      this._telefone, this._aniversario);
+      this._telefone, this._aniversario, this._url);
 
   String get idContact {
     return this._id;
@@ -40,6 +41,10 @@ class Contato with ChangeNotifier {
     return this._aniversario;
   }
 
+  String get url {
+    return this._url;
+  }
+
   set id(String id) {
     this._id = id;
   }
@@ -67,4 +72,9 @@ class Contato with ChangeNotifier {
   set aniversario(String aniversario) {
     this._aniversario = aniversario;
   }
+
+  set url(String url) {
+    this._url = url;
+  }
+
 }

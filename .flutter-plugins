@@ -7,3 +7,7 @@ firebase_core=/home/g0ddo/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_co
 firebase_core_web=/home/g0ddo/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core_web-1.1.0/
 firebase_storage=/home/g0ddo/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_storage-8.1.0/
 firebase_storage_web=/home/g0ddo/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_storage_web-1.1.0/
+flutter_plugin_android_lifecycle=/home/g0ddo/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-2.0.2/
+image_cropper=/home/g0ddo/flutter/.pub-cache/hosted/pub.dartlang.org/image_cropper-1.4.0/
+image_picker=/home/g0ddo/flutter/.pub-cache/hosted/pub.dartlang.org/image_picker-0.8.0/
+image_picker_for_web=/home/g0ddo/flutter/.pub-cache/hosted/pub.dartlang.org/image_picker_for_web-2.0.0/

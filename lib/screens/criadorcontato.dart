@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:agenda_de_contatos/imagePicker/pick_user_image.dart';
 import 'package:agenda_de_contatos/models/contato.dart';
 import 'package:agenda_de_contatos/provider/contatos_provider.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +26,7 @@ class _CriadorContato extends State<CriadorContato> {
   String cep = '';
   String telefone = '';
   DateTime aniversario;
+  File imagem;
   bool atualizar = false;
 
   void initState() {
@@ -39,6 +42,10 @@ class _CriadorContato extends State<CriadorContato> {
       else {aniversario = DateTime.now();}
       atualizar = true;
     }
+  }
+
+  void _storeUserImageFile(File imagem) {
+    this.imagem = imagem;
   }
 
   selecionaData() {
@@ -59,7 +66,7 @@ class _CriadorContato extends State<CriadorContato> {
 
     if (!atualizar)
       await Provider.of<ContatosProvider>(context, listen: false)
-          .add(nome, email, endereco, cep, telefone,aniversario.toIso8601String());
+          .add(nome, email, endereco, cep, telefone,aniversario.toIso8601String(),imagem);
     else {
       widget.c.nome = nome;
       widget.c.email = email;
@@ -69,7 +76,7 @@ class _CriadorContato extends State<CriadorContato> {
       widget.c.aniversario = aniversario.toIso8601String();
 
       await Provider.of<ContatosProvider>(context, listen: false)
-          .update(widget.c);
+          .update(widget.c,imagem);
     }
     Navigator.of(context).pop();
   }
@@ -82,11 +89,14 @@ class _CriadorContato extends State<CriadorContato> {
       ),
       body: Form(
           key: globalKey,
-          child: SingleChildScrollView(
-            child: Padding(
+            child: Container(
               padding: const EdgeInsets.all(20),
-              child: Column(
+              child: ListView(
                 children: [
+                PickUserImage(
+                  _storeUserImageFile,
+                  initialValue: widget.c?.url ?? '',
+                ),
                   TextFormField(
                     initialValue: nome,
                     decoration: InputDecoration(
@@ -192,9 +202,11 @@ class _CriadorContato extends State<CriadorContato> {
                         aniversario == null
                             ? Text('Nenhuma data \n foi selecionada')
                             : Text(DateFormat('dd/MM/yyyy').format(aniversario)),
-                        ElevatedButton(
-                            onPressed: selecionaData,
-                            child: Text('Escolha uma data')),
+                        Expanded(
+                                                  child: ElevatedButton(
+                              onPressed: selecionaData,
+                              child: Text('Escolha uma data')),
+                        ),
                       ]),
 
                   const SizedBox(height: 30),
@@ -203,7 +215,6 @@ class _CriadorContato extends State<CriadorContato> {
                 ],
               ),
             ),
-          )),
-    );
+          ));
   }
 }

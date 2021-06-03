@@ -1,3 +1,4 @@
+import 'package:agenda_de_contatos/models/contato.dart';
 import 'package:agenda_de_contatos/provider/contatos_provider.dart';
 import 'package:agenda_de_contatos/screens/aniversariantes.dart';
 import 'package:agenda_de_contatos/screens/contato_info.dart';
@@ -9,6 +10,15 @@ import 'package:provider/provider.dart';
 
 class Menu extends StatelessWidget {
   static const routeName = 'menu';
+
+  CircleAvatar _buildUserPhoto(List<Contato> contato, int index) {
+    if (contato[index].url != '')
+      return CircleAvatar(
+        backgroundImage: NetworkImage(contato[index].url),
+      );
+    else
+      return CircleAvatar();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +71,7 @@ class Menu extends StatelessWidget {
                       builder: (ctx, contas, _) => ListView.builder(
                         itemCount: contas.items.length,
                         itemBuilder: (ctx, index) => ListTile(
-                            leading: CircleAvatar(),
+                            leading: _buildUserPhoto(contas.items,index),
                             title: Text(contas.items[index].nome),
                             subtitle: Text(contas.items[index].telefone),
                             trailing: GestureDetector(
